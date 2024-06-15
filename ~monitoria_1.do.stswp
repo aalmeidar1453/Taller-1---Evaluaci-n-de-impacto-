@@ -53,7 +53,7 @@ eststo clear
 estpost tabstat score ophe-min_dist if round==0, c(stat) stat(mean sd min max n)
 
 esttab using "$root/tab1_1.tex", replace cells("mean(fmt(2)) sd min(fmt(0)) max(fmt(0)) count(fmt(0))") nonumber nomtitle booktabs noobs collabels("Mean" "SD" "Min" "Max" "N")  addnote(" ") coeflabels(score "índice pobreza" ophe "Gasto educación (valor per-capita)" age_hh "Edad jefe hogar (años)" age_sp "Edad conyuge (años)"educ_hh "Educación jefe hogar (años)" educ_sp "Educación conyuge (años)" ethnicity_hh "Jefe hogar habla lengua indigena" female_hh "Jefe hogar mujer" hhsize_basal "Tamaño hogar" dirtfloor_basal "Piso de tierra" bathroom_basal "Baño privado" landhectars_basal "Hectáreas población" min_dist "Dist. pob. y hospital más cercano") 
-
+*Esto es una prueba para ver si sí se iplementan los cambios
 * Pregunta 2 - Diferencia Antes-Después.
 *help ttest 
 gen double round2 = round==0
