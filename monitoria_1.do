@@ -5,7 +5,7 @@
 * Profesor Asistente: Carlos Bermúdez                             *   
 * Fecha: junio 2024                                               *                  
 *-----------------------------------------------------------------*
-
+nnnnnnnnn
 *------------------------------------------*
 * Establecer ruta de carpeta de trabajo    *
 *------------------------------------------*
