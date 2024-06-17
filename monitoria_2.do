@@ -13,6 +13,22 @@
 global root  "/Users/alejandra/Downloads/Taller_1/"
 use "$root/EjercicioStata", clear
 
+label variable score "índice pobreza" 
+label variable ophe "Gasto educación (valor per-capita)" 
+label variable age_hh "Edad jefe hogar (años)" 
+label variable age_sp "Edad conyuge (años)"
+label variable educ_hh "Educación jefe hogar (años)" 
+label variable educ_sp "Educación conyuge (años)" 
+label variable ethnicity_hh "Jefe hogar habla lengua indigena" 
+label variable female_hh "Jefe hogar mujer" 
+label variable hhsize_basal "Tamaño hogar" 
+label variable dirtfloor_basal "Piso de tierra" 
+label variable bathroom_basal "Baño privado" 
+label variable landhectars_basal "Hectáreas población" 
+label variable min_dist "Dist. pob. y hospital más cercano"
+label variable treatcom "Tratados = 1"
+label variable round "Etapa seguimiento = 1"
+
 *-----------------------*
 *       Caso 4          *
 *-----------------------*
@@ -42,7 +58,7 @@ mat stars[1,3]=0
 mat stars[1,4]=0
 mat stars[1,5]=(r(p)<0.1)+(r(p)<0.05)+(r(p)<0.01)
 
-frmttable using "$root/tab4_2.tex",replace statmat(diff) annotate(stars) sdec(3) asymbol(*,**,***) tex fragment ctitles("" "Mean Round=1" "Mean Round=0" "Diff" "se" "p-value") rtitles("Gasto educación" \ "sd") note("* p \textless 0.10, ** p \textless 0.05, *** p \textless 0.01.")
+frmttable using "$root/tab4_2.tex",replace statmat(diff) annotate(stars) sdec(3) asymbol(*,**,***) tex fragment ctitles("" "Mean Tratado=1" "Mean Tratado=0" "Diff" "se" "p-value") rtitles("d.Gasto educación" \ "sd") note("* p \textless 0.10, ** p \textless 0.05, *** p \textless 0.01.")
 
 *Pregunta 3 y 4
 eststo clear
