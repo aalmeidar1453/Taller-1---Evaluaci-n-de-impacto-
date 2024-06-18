@@ -26,8 +26,8 @@ label variable dirtfloor_basal "Piso de tierra"
 label variable bathroom_basal "Baño privado" 
 label variable landhectars_basal "Hectáreas población" 
 label variable min_dist "Dist. pob. y hospital más cercano"
-label variable treatcom "Tratados = 1"
-label variable round "Etapa seguimiento = 1"
+label variable treatcom "Tratados"
+label variable round "Etapa seguimiento"
 
 *-----------------------*
 *       Caso 4          *
@@ -37,7 +37,7 @@ label variable round "Etapa seguimiento = 1"
 * Creamos la variable de cambio para cada hogar.  
 bysort hhid (round): gen deltha_ophe = ophe - ophe[_n-1]
 order hhid round ophe deltha_ophe 
-
+sum deltha_ophe
 * Pregunta 2
 
 * Diferencia de medias. 
@@ -58,13 +58,14 @@ mat stars[1,3]=0
 mat stars[1,4]=0
 mat stars[1,5]=(r(p)<0.1)+(r(p)<0.05)+(r(p)<0.01)
 
-frmttable using "$root/tab4_2.tex",replace statmat(diff) annotate(stars) sdec(3) asymbol(*,**,***) tex fragment ctitles("" "Mean Tratado=1" "Mean Tratado=0" "Diff" "se" "p-value") rtitles("d.Gasto educación" \ "sd") note("* p \textless 0.10, ** p \textless 0.05, *** p \textless 0.01.")
+frmttable using "$root/tab4_2.tex",replace statmat(diff) annotate(stars) sdec(3) asymbol(*,**,***) tex fragment ctitles("" "Mean Tratado=1" "Mean Tratado=0" "Diff" "se" "p-value") rtitles("deltha_ophe" \ "sd") note("* p \textless 0.10, ** p \textless 0.05, *** p \textless 0.01.")
 
 *Pregunta 3 y 4
 eststo clear
 eststo m1: reg deltha_ophe treatcom if eligible==1,vce(cluster local) 
+esttab m1 using "$root/tab4_3.tex",star(* 0.10 ** 0.05 *** 0.01)  se nocons nomtitles nonotes label  stats(N, labels("Observaciones")) replace addnote("Errores estándar cluster en paréntsis" "* p \textless 0.10, ** p \textless 0.05, *** p \textless 0.01.")
 eststo m2: reg deltha_ophe treatcom min_dist hhsize_basal female_hh educ_sp educ_hh bathroom_basal dirtfloor_basal age_sp age_hh  if eligible==1,vce(cluster local) 
-esttab m1 m2 using "$root/tab4_34.tex",star(* 0.10 ** 0.05 *** 0.01)  se nocons nomtitles nonotes label  stats(N, labels("Observaciones")) replace addnote("Errores estándar cluster en paréntsis" "* p \textless 0.10, ** p \textless 0.05, *** p \textless 0.01.")
+esttab m1 m2 using "$root/tab4_4.tex",star(* 0.10 ** 0.05 *** 0.01)  se nocons nomtitles nonotes label  stats(N, labels("Observaciones")) replace addnote("Errores estándar cluster en paréntsis" "* p \textless 0.10, ** p \textless 0.05, *** p \textless 0.01.")
 
 * Pregunta 5
 * El efecto esta entre -7.6 y -7.7
@@ -73,9 +74,10 @@ esttab m1 m2 using "$root/tab4_34.tex",star(* 0.10 ** 0.05 *** 0.01)  se nocons 
 *sin controles
 eststo clear
 eststo m3: reg ophe i.round##i.treatcom if eligible==1,vce(cluster local) 
+esttab m3 using "$root/tab4_6.tex",star(* 0.10 ** 0.05 *** 0.01)  se nocons nomtitles nonotes noomitted label  stats(N, labels("Observaciones")) replace addnote("Errores estándar cluster en paréntsis" "* p \textless 0.10, ** p \textless 0.05, *** p \textless 0.01.")
 *con controles
 eststo m4: reg ophe i.round##i.treatcom min_dist hhsize_basal female_hh educ_sp educ_hh bathroom_basal dirtfloor_basal age_sp age_hh  if eligible==1,vce(cluster local) 
-esttab m3 m4 using "$root/tab4_67.tex",star(* 0.10 ** 0.05 *** 0.01)  se nocons nomtitles nonotes label  stats(N, labels("Observaciones")) replace addnote("Errores estándar cluster en paréntsis" "* p \textless 0.10, ** p \textless 0.05, *** p \textless 0.01.")
+esttab m3 m4 using "$root/tab4_7.tex",star(* 0.10 ** 0.05 *** 0.01)  se nocons nomtitles nonotes noomitted  label  stats(N, labels("Observaciones")) replace addnote("Errores estándar cluster en paréntsis" "* p \textless 0.10, ** p \textless 0.05, *** p \textless 0.01.")
 *Los resultados son similares
 
 *-----------------------*
