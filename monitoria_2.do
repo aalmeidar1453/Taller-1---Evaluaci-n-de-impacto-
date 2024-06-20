@@ -63,9 +63,11 @@ frmttable using "$root/tab4_2.tex",replace statmat(diff) annotate(stars) sdec(3)
 *Pregunta 3 y 4
 eststo clear
 eststo m1: reg deltha_ophe treatcom if eligible==1,vce(cluster local) 
-esttab m1 using "$root/tab4_3.tex",star(* 0.10 ** 0.05 *** 0.01)  se nocons nomtitles nonotes label  stats(N, labels("Observaciones")) replace addnote("Errores estándar cluster en paréntsis" "* p \textless 0.10, ** p \textless 0.05, *** p \textless 0.01.")
+estadd local controles "No"
+esttab m1 using "$root/tab4_3.tex",star(* 0.10 ** 0.05 *** 0.01)  se nocons nomtitles nonotes label  stats(controles N, labels("Controles" "Observaciones")) replace addnote("Errores estándar cluster en paréntsis" "* p \textless 0.10, ** p \textless 0.05, *** p \textless 0.01.")
 eststo m2: reg deltha_ophe treatcom min_dist hhsize_basal female_hh educ_sp educ_hh bathroom_basal dirtfloor_basal age_sp age_hh  if eligible==1,vce(cluster local) 
-esttab m1 m2 using "$root/tab4_4.tex",star(* 0.10 ** 0.05 *** 0.01)  se nocons nomtitles nonotes label  stats(N, labels("Observaciones")) replace addnote("Errores estándar cluster en paréntsis" "* p \textless 0.10, ** p \textless 0.05, *** p \textless 0.01.")
+estadd local controles "Si"
+esttab m1 m2 using "$root/tab4_4.tex",star(* 0.10 ** 0.05 *** 0.01) keep(treatcom) se nocons nomtitles nonotes label  stats(controles N, labels("Controles" "Observaciones")) replace addnote("Errores estándar cluster en paréntsis" "* p \textless 0.10, ** p \textless 0.05, *** p \textless 0.01.")
 
 * Pregunta 5
 * El efecto esta entre -7.6 y -7.7
@@ -74,15 +76,18 @@ esttab m1 m2 using "$root/tab4_4.tex",star(* 0.10 ** 0.05 *** 0.01)  se nocons n
 *sin controles
 eststo clear
 eststo m3: reg ophe i.round##i.treatcom if eligible==1,vce(cluster local) 
-esttab m3 using "$root/tab4_6.tex",star(* 0.10 ** 0.05 *** 0.01)  se nocons nomtitles nonotes noomitted label  stats(N, labels("Observaciones")) replace addnote("Errores estándar cluster en paréntsis" "* p \textless 0.10, ** p \textless 0.05, *** p \textless 0.01.")
+estadd local controles "No"
+esttab m3 using "$root/tab4_6.tex",star(* 0.10 ** 0.05 *** 0.01) se nocons nomtitles nonotes noomitted label  stats(controles N, labels("Controles" "Observaciones")) replace addnote("Errores estándar cluster en paréntsis" "* p \textless 0.10, ** p \textless 0.05, *** p \textless 0.01.")
 *con controles
 eststo m4: reg ophe i.round##i.treatcom min_dist hhsize_basal female_hh educ_sp educ_hh bathroom_basal dirtfloor_basal age_sp age_hh  if eligible==1,vce(cluster local) 
-esttab m3 m4 using "$root/tab4_7.tex",star(* 0.10 ** 0.05 *** 0.01)  se nocons nomtitles nonotes noomitted  label  stats(N, labels("Observaciones")) replace addnote("Errores estándar cluster en paréntsis" "* p \textless 0.10, ** p \textless 0.05, *** p \textless 0.01.")
+estadd local controles "Si"
+esttab m3 m4 using "$root/tab4_7.tex",star(* 0.10 ** 0.05 *** 0.01) se nocons nomtitles nonotes noomitted drop(min_dist hhsize_basal female_hh educ_sp educ_hh bathroom_basal dirtfloor_basal age_sp age_hh) label  stats(controles N, labels("Controles" "Observaciones")) replace addnote("Errores estándar cluster en paréntsis" "* p \textless 0.10, ** p \textless 0.05, *** p \textless 0.01.")
 *Los resultados son similares
 
 
+reg deltha_ophe treatcom min_dist hhsize_basal female_hh educ_sp educ_hh bathroom_basal dirtfloor_basal age_sp age_hh  if eligible==1,vce(cluster local) 
 
-
+reg ophe i.round##i.treatcom min_dist hhsize_basal female_hh educ_sp educ_hh bathroom_basal dirtfloor_basal age_sp age_hh  if eligible==1,vce(cluster local) 
 
 *-----------------------*
 *       Caso 5          *
@@ -98,7 +103,7 @@ cd $root
 tw 	(hist score if eligible==1 & treatcom==1 & round==0, lcolor(red) color(none)) ///
 	(hist score if eligible==0 & treatcom==1 & round==0, lcolor(blue) color(none)), ///
 	xline(750, lcolor(black) lpattern(solid)) legend(label(1 "Eligibles") label(2 "No eligibles"))
-	graph export "fig5_1.pdf",as(pdf)
+	graph export "fig5_1.pdf",as(pdf) replace
 	*sugiere manipulación, pero en el sentido contrario, lo que es raro.
 
 * Pregunta 2
@@ -111,7 +116,7 @@ esttab m5 using "$root/tab5_2.tex",star(* 0.10 ** 0.05 *** 0.01)  se nocons nomt
 cap drop yhat0
 predict yhat0 if e(sample), xb
 scatter yhat0 score, xline(750)
-graph export "fig5_3.pdf",as(pdf)
+graph export "fig5_3.pdf",as(pdf) replace
 
 
 * Pregunta 4
@@ -123,7 +128,7 @@ esttab m5 using "$root/tab5_4.tex",star(* 0.10 ** 0.05 *** 0.01)  se nocons nomt
 cap drop yhat0
 predict yhat0 if e(sample), xb
 scatter yhat0 score, xline(750)
-graph export "fig5_4.pdf",as(pdf)
+graph export "fig5_4.pdf",as(pdf) replace
 
 *pregunta 5 - PODRÍAN LAS FAMILIAS MODIFICAR SU COMPORTAMIENTO?
 
