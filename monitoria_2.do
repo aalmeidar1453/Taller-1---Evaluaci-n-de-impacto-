@@ -1,10 +1,11 @@
-*-----------------------------------------------------------------*
-* Curso: Evaluación de Impacto con Aplicaciones en Educación      *
-* Monitoria 2                                                     *
-* Profesor: Felipe Barrera                                        *
-* Profesor Asistente: Carlos Bermúdez                             *   
-* Fecha: junio 2024                                               *                  
-*-----------------------------------------------------------------*
+*-------------------------------------------------------------------*
+* Curso: Evaluación de Impacto con Aplicaciones en Educación        *
+* Monitoria 2                                                       *
+* Profesor: Felipe Barrera                                          *
+* Profesor Asistente: Carlos Bermúdez                               *
+* Estudiantes: Alexander Almeida-Ramirez, Alejandra Gonzalez-Ramirez*
+* Fecha: junio 2024                                                 *                  
+*-------------------------------------------------------------------*
 
 *------------------------------------------*
 * Establecer ruta de carpeta de trabajo    *
@@ -85,9 +86,13 @@ esttab m3 m4 using "$root/tab4_7.tex",star(* 0.10 ** 0.05 *** 0.01) se nocons no
 *Los resultados son similares
 
 
-reg deltha_ophe treatcom min_dist hhsize_basal female_hh educ_sp educ_hh bathroom_basal dirtfloor_basal age_sp age_hh  if eligible==1,vce(cluster local) 
+*xtset hhid round
 
-reg ophe i.round##i.treatcom min_dist hhsize_basal female_hh educ_sp educ_hh bathroom_basal dirtfloor_basal age_sp age_hh  if eligible==1,vce(cluster local) 
+*reg ophe i.round##i.treatcom d.min_dist d.hhsize_basal d.female_hh d.educ_sp d.educ_hh d.bathroom_basal d.dirtfloor_basal d.age_sp d.age_hh  if eligible==1,vce(cluster local) 
+
+*5.El efecto del tratamiento es una reducción de aproximadamente 7.7 unidades monetarias en el gasto de educación, este efecto es estadisticamente significativo al 1\% de significancia. Este efecto puede ser un poco diferente cuando incluimos controles, pero la diferencia es relativamente pequeña.  
+
+*comentar a mano los omitidos
 
 *-----------------------*
 *       Caso 5          *
@@ -141,3 +146,82 @@ eststo m2: regress ophe eligible score if round==1 & treatcom==1&score<=840&scor
 eststo m3: regress ophe eligible score if round==1 & treatcom==1&score<=825&score>=675, vce(cluster local) 
 eststo m4: regress ophe eligible score if round==1 & treatcom==1&score<=800&score>=700, vce(cluster local) 
 esttab m1 m2 m3 m4 using "$root/tab5_6.tex",star(* 0.10 ** 0.05 *** 0.01)  se nocons nomtitles nonotes noomitted  label  stats(N, labels("Observaciones")) replace addnote("Errores estándar cluster en paréntsis" "* p \textless 0.10, ** p \textless 0.05, *** p \textless 0.01.")
+
+*PREGUNTA 7
+
+
+mat diff=J(9,3,.)
+mat stars=J(9,3,.)
+
+local i = 1
+foreach var of varlist min_dist hhsize_basal female_hh educ_sp educ_hh bathroom_basal dirtfloor_basal age_sp age_hh{
+
+	
+ttest `var' if round == 0 & treatcom == 1 ,by(eligible) reverse
+
+mat diff[`i',1]=(`r(se)')
+mat diff[`i',2]=`r(mu_1)'-`r(mu_2)'
+mat diff[`i',3]=`r(p)'
+mat stars[`i',1]=0
+mat stars[`i',2]=0
+mat stars[`i',3]=(r(p)<0.1)+(r(p)<0.05)+(r(p)<0.01)
+
+local i = `i'+1
+}
+
+frmttable using "$root/tab5_7a.tex",replace statmat(diff) annotate(stars) sdec(3) asymbol(*,**,***) tex fragment ctitles("" "Diff" "se" "p-value") rtitles("Dist. pob. y hospital más cercano" \ "Tamaño hogar" \ "Jefe hogar mujer" \ "Educación conyuge (años)" \ "Educación jefe hogar (años)" \ "Baño privado" \ "Piso de tierra" \ "Edad conyuge (años)" \ "Edad jefe hogar (años)") note("* p \textless 0.10, ** p \textless 0.05, *** p \textless 0.01.")
+
+
+
+
+mat diff=J(9,3,.)
+mat stars=J(9,3,.)
+
+local i = 1
+foreach var of varlist min_dist hhsize_basal female_hh educ_sp educ_hh bathroom_basal dirtfloor_basal age_sp age_hh{
+
+	
+ttest `var' if round == 0 & treatcom == 1 & score<=800 & score>=700,by(eligible) reverse
+
+mat diff[`i',1]=(`r(se)')
+mat diff[`i',2]=`r(mu_1)'-`r(mu_2)'
+mat diff[`i',3]=`r(p)'
+mat stars[`i',1]=0
+mat stars[`i',2]=0
+mat stars[`i',3]=(r(p)<0.1)+(r(p)<0.05)+(r(p)<0.01)
+
+local i = `i'+1
+}
+
+frmttable using "$root/tab5_7b.tex",replace statmat(diff) annotate(stars) sdec(3) asymbol(*,**,***) tex fragment ctitles("" "Diff" "se" "p-value") rtitles("Dist. pob. y hospital más cercano" \ "Tamaño hogar" \ "Jefe hogar mujer" \ "Educación conyuge (años)" \ "Educación jefe hogar (años)" \ "Baño privado" \ "Piso de tierra" \ "Edad conyuge (años)" \ "Edad jefe hogar (años)") note("* p \textless 0.10, ** p \textless 0.05, *** p \textless 0.01.")
+
+
+
+mat diff=J(9,3,.)
+mat stars=J(9,3,.)
+
+local i = 1
+foreach var of varlist min_dist hhsize_basal female_hh educ_sp educ_hh bathroom_basal dirtfloor_basal age_sp age_hh{
+
+	
+ttest `var' if round == 0 & treatcom == 1 & score<=780 & score>=720,by(eligible) reverse
+
+mat diff[`i',1]=(`r(se)')
+mat diff[`i',2]=`r(mu_1)'-`r(mu_2)'
+mat diff[`i',3]=`r(p)'
+mat stars[`i',1]=0
+mat stars[`i',2]=0
+mat stars[`i',3]=(r(p)<0.1)+(r(p)<0.05)+(r(p)<0.01)
+
+local i = `i'+1
+}
+
+frmttable using "$root/tab5_7c.tex",replace statmat(diff) annotate(stars) sdec(3) asymbol(*,**,***) tex fragment ctitles("" "Diff" "se" "p-value") rtitles("Dist. pob. y hospital más cercano" \ "Tamaño hogar" \ "Jefe hogar mujer" \ "Educación conyuge (años)" \ "Educación jefe hogar (años)" \ "Baño privado" \ "Piso de tierra" \ "Edad conyuge (años)" \ "Edad jefe hogar (años)") note("* p \textless 0.10, ** p \textless 0.05, *** p \textless 0.01.")
+
+
+
+tw 	(hist score if round==0), ///
+	xline(750, lcolor(black) lpattern(solid))
+	graph export "fig5_7.pdf",as(pdf) replace
+
+	*observamos diferencias estadisticamente significativas aun cuando acotamos la ventana alrededor del punto de corte. Esto puede inducirnos a pensar que los individuos por debajo y por encima del corte realmente son diferentes y nuestro RD no es valido. 
